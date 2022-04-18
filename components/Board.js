@@ -3,9 +3,8 @@ import Square from "./Square";
 
 export default function Board(props) {
   const size = +props.boardSize;
-
-  //return each square
-  function renderSquare([i, j, boardType]) {
+   //return each square
+   function renderSquare([i, j, boardType]) {
     return (
       <Square
         value={props.value}
@@ -13,7 +12,8 @@ export default function Board(props) {
         key={Math.random()}
         position={[i, j]}
         boardType={boardType}
-        onClick={() => props.onClick(userBoard, boardType, [i, j])}
+        onClick={() => props.onClick(boardType, i, j)}
+        board={props.boardState}
       />
     );
   }
@@ -31,7 +31,6 @@ export default function Board(props) {
 
   let enemyBoard = createBoard("enemyBoard");
   let userBoard = createBoard("userBoard");
-
   return (
     <>
       <h1>Waterbound Fighting Vessels</h1>

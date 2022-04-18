@@ -13,36 +13,34 @@ function Game(props) {
     length: "",
     placed: null,
   });
+  const [rotation,setRotation] = useState("right");
   const [availableShips, setAvailableShips] = useState(AVAILABLE_SHIPS);
-  const [board, setBoard] = useState({
-    board: [],
-    i: "",
-    j: "",
-    value: "0",
-  });
-
+  
   const boardSize = +props.boardSize + 1;
-
-  const setSquareValue = (i, j, value) => {
-    board.board[(i, j)] = value;
-  };
-
-  const handleClick = (userBoard, boardType, [i, j]) => {
+  
+  let startingBoard = [];
+  for (let i = 0; i < boardSize; i++) {
+    for (let j = 0; j < boardSize; j++) {
+      startingBoard.push("0");
+    }
+  }
+  //board maintains the state of all squares
+  const [board, setBoard] = useState(
+    startingBoard);
+  
+  
+  const handleClick = (boardType, i, j) => {
     if (boardType == "userBoard") {
-      if (userBoard[(i, j)].props.value == 0) {
+      if (board[i*boardSize+j] == "0") {
         if (shipSelected.placed == null) {
           if (j + shipSelected.length <= boardSize) {
-            setBoard((prevValue) => ({
-              ...prevValue,
-              board: userBoard,
-              i: i,
-              j: j,
-              value: "x",
-            }));
+            let m = j;
+            let newBoard = board.slice();
             for (let k = 0; k < shipSelected.length; k++) {
-              setSquareValue(board.i, board.j, board.value);
-              i++, j++;
+              newBoard[(i*boardSize+m+k)] = "x";
             }
+            console.log(rotation);
+            setBoard(newBoard);
           }
           console.log(`square ${[i, j]} was clicked`);
         }
@@ -68,12 +66,29 @@ function Game(props) {
 
   return (
     <>
+    <button
+
+onClick={()=> {
+if(rotation=="right")
+{
+ setRotation("down");
+}
+else
+{
+  setRotation("right");
+}
+}}
+name={"rotation"}
+>
+  rotate here
+</button>
       <Board
-        onClick={(userBoard, boardType, i, j) =>
-          handleClick(userBoard, boardType, i, j)
+        onClick={(boardType, i, j) =>
+          handleClick(boardType, i, j)
         }
         boardSize={boardSize}
-        value={board.value}
+        value="0"
+        boardState={board}
       />
       {gameState == "placement" &&
         availableShips.map((ship) => {
