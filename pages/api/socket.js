@@ -1,5 +1,7 @@
 import { Server } from 'Socket.IO'
 
+const boardSet="";
+
 const SocketHandler = (req, res) => {
   if (res.socket.server.io) {
     console.log('Socket is already running')
@@ -12,7 +14,16 @@ const SocketHandler = (req, res) => {
     // requests and everything within that connection happens in the io.on block
     io.on('connection', socket => {
       const clientID = socket.id;
+      
+      socket.on('board-size-change', msg => {
+        socket.broadcast.emit('board-size-update', msg)
+        boardSet=msg;
+      })
 
+      socket.on('board-size-req', msg => {
+        socket.broadcast.emit('board-size-update', boardSet)
+      })
+      
       console.log("server connected");
     })
 
